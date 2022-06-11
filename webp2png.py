@@ -5,13 +5,13 @@ import os
 from PIL import Image
 
 # parent_path直下の対象フォルダ
-target_dirs_list = [
-    "/Users/parent_dir_pathdir_1",
-    "/Users/parent_dir_pathdir_2",
-    "/Users/parent_dir_pathdir_3"
+target_dirs = [
+    "/Users/parent_dir_path/dir_1",
+    "/Users/parent_dir_path/dir_2",
+    "/Users/parent_dir_path/dir_3"
 ]
 
-for target_dir in target_dirs_list:
+for target_dir in target_dirs:
 
     print(target_dir)
 
