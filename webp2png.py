@@ -3,6 +3,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 import time
 import math
+import shutil
 
 from PIL import Image
 
@@ -22,11 +23,15 @@ def rename_files_by_regex(thread_cnt, parent_path, target_dir, target_file_regex
 
         im = Image.open(target_file).convert("RGB")
         im.save(mod_file_path, "png")
+
+        os.remove(target_file)
     
-    end_time = time.time()
+    shutil.make_archive(os.path.join(parent_path, target_dir), format='zip', root_dir=os.path.join(parent_path, target_dir))
+
+    end_time     = time.time()
     elapsed_time = math.floor(end_time - start_time)
 
-    print(f'[{thread_cnt}] done. file_count:{str(len(target_files))} elapsed_time:{elapsed_time}')
+    print(f'[{thread_cnt}] done. file_count:{str(len(target_files))} elapsed_time:{elapsed_time}')    
 
 def main():
     parent_path = '/parent_dir_path'
