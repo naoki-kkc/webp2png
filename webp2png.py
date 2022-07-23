@@ -1,28 +1,51 @@
 import glob
-import re
 import os
+from concurrent.futures import ThreadPoolExecutor
+import time
+import math
 
 from PIL import Image
 
-# parent_path直下の対象フォルダ
-target_dirs = [
-    "/Users/parent_dir_path/dir_1",
-    "/Users/parent_dir_path/dir_2",
-    "/Users/parent_dir_path/dir_3"
-]
+def rename_files_by_regex(thread_cnt, parent_path, target_dir, target_file_regex):
 
-for target_dir in target_dirs:
+    start_time = time.time()
 
-    print(target_dir)
+    target_files = glob.glob(target_file_regex)
 
-    file_list = glob.glob(os.path.join(target_dir,"*.webp"))
+    print('['+thread_cnt+'] ' + target_dir + ' (file_count = ' + str(len(target_files)) + ')')
 
-    cnt = 1
-    for f in file_list:
-        # print("[" + str(cnt) + "/" + str(len(file_list)) + "]" +f)
-        filename     = os.path.split(f)[1]
-        mod_filename = os.path.join(target_dir, filename.split(".")[0] + ".png")
+    for target_file in target_files:
+        filename     = os.path.split(target_file)[1]
+        mod_filename = filename.split('.')[0] + '.png'
 
-        im = Image.open(f).convert("RGB")
-        im.save(mod_filename, "png")
-        cnt += 1
+        mod_file_path = os.path.join(parent_path, os.path.join(target_dir, mod_filename))
+
+        im = Image.open(target_file).convert("RGB")
+        im.save(mod_file_path, "png")
+    
+    end_time = time.time()
+    elapsed_time = math.floor(end_time - start_time)
+
+    print(f'[{thread_cnt}] done. file_count:{str(len(target_files))} elapsed_time:{elapsed_time}')
+
+def main():
+    parent_path = '/parent_dir_path'
+    target_dirs = os.listdir(parent_path)
+
+    tpe = ThreadPoolExecutor(max_workers=4)
+    thread_cnt = 1
+    for target_dir in target_dirs:
+
+        if target_dir == '.DS_Store':
+            # print('continue by dsstore')
+            continue
+        
+        target_file_regex = os.path.join(parent_path, os.path.join(target_dir, '*.webp'))
+
+        tpe.submit(rename_files_by_regex, str(thread_cnt), parent_path, target_dir, target_file_regex)
+        thread_cnt += 1
+
+    tpe.shutdown()
+
+if __name__ == '__main__':
+    main()
