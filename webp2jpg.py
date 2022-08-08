@@ -15,20 +15,23 @@ def rename_files_by_regex(thread_cnt, parent_path, target_dir, target_file_regex
 
     target_files = glob.glob(target_file_regex)
 
+    if len(target_files) == 0:
+        print(f'[{thread_cnt}] skipped (no target).')    
+
     print('['+thread_cnt+'] ' + target_dir + ' (file_count = ' + str(len(target_files)) + ')')
 
     for target_file in target_files:
-        filename     = os.path.split(target_file)[1]
-        mod_filename = filename.split('.')[0] + '.jpg'
-
+    
+        filename      = os.path.split(target_file)[1]
+        mod_filename  = filename.split('.')[0] + '.jpg'
         mod_file_path = os.path.join(parent_path, os.path.join(target_dir, mod_filename))
 
         im = Image.open(target_file).convert("RGB")
         im.save(mod_file_path, "jpeg", quality=90, optimize=True) # optimize=90が画質とサイズのバランスが良さげだった(個人の主観)
 
-        os.remove(target_file)
-    
-    shutil.make_archive(os.path.join(parent_path, target_dir), format='zip', root_dir=os.path.join(parent_path, target_dir))
+        # os.remove(target_file)
+
+    # shutil.make_archive(os.path.join(parent_path, target_dir), format='zip', root_dir=os.path.join(parent_path, target_dir))
 
     end_time     = time.time()
     elapsed_time = math.floor(end_time - start_time)
