@@ -53,4 +53,5 @@ def main():
     tpe.shutdown()
 
 if __name__ == '__main__':
-    main()
+    print('THIS CODE IS NOT MAINTENANED, PLEASE USE webp2jpg.py')
+    # main()
