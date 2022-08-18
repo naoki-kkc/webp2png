@@ -5,6 +5,18 @@ import sys
 
 from PIL import Image
 
+def execute_parallel(parent_path):
+
+    target_dirs = os.listdir(parent_path)    
+
+    for target_dir in target_dirs:
+
+        if target_dir == '.DS_Store':
+            # print('continue by dsstore')
+            continue
+        
+        shutil.make_archive(os.path.join(parent_path, target_dir), format='zip', root_dir=os.path.join(parent_path, target_dir))
+
 def main():
 
     args = sys.argv
@@ -16,15 +28,8 @@ def main():
         exit()
 
     parent_path = args[1]
-    target_dirs = os.listdir(parent_path)    
-
-    for target_dir in target_dirs:
-
-        if target_dir == '.DS_Store':
-            # print('continue by dsstore')
-            continue
-        
-        shutil.make_archive(os.path.join(parent_path, target_dir), format='zip', root_dir=os.path.join(parent_path, target_dir))
+    execute_parallel(parent_path)
+    
 
 if __name__ == '__main__':
     main()

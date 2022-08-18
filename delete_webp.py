@@ -25,18 +25,8 @@ def delete_files_by_regex(thread_cnt, target_dir, target_file_regex):
 
     print(f'[{thread_cnt}] done. file_count:{str(len(target_files))} elapsed_time:{elapsed_time}')    
 
-def main():
-
-    args = sys.argv
-    if len(args) != 2:
-        print('parent_path is not specified.')
-        exit()
-    elif not os.path.exists(args[1]):
-        print('parent_path is not found')
-        exit()
-
-    parent_path = args[1]
-    target_dirs = os.listdir(parent_path)    
+def execute_parallel(parent_path):
+    target_dirs = os.listdir(parent_path)
 
     tpe = ThreadPoolExecutor(max_workers=4)
     thread_cnt = 1
@@ -53,5 +43,18 @@ def main():
 
     tpe.shutdown()
 
+def main():
+
+    args = sys.argv
+    if len(args) != 2:
+        print('parent_path is not specified.')
+        exit()
+    elif not os.path.exists(args[1]):
+        print('parent_path is not found')
+        exit()
+
+    parent_path = args[1]   
+    execute_parallel(parent_path)
+    
 if __name__ == '__main__':
     main()
